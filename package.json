@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "release": "zip -r release.zip build/ icons/icon.svg manifest.json"
   },
   "dependencies": {
     "query-string": "^6.13.1"

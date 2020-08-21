@@ -1,4 +1,8 @@
 {
+  "developer": {
+    "author": "Daniel Young",
+    "url": "https://github.com/DanRYoung/twitch-timestamp-tracker"
+  },
   "manifest_version": 2,
   "name": "Twitch Timestamp Tracker",
   "version": "1.0",
@@ -8,7 +12,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://*.twitch.tv/*"],
+      "matches": ["*://*.twitch.tv/videos/*"],
       "js": ["build/index.js"]
     }
   ]

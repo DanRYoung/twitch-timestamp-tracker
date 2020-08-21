@@ -2,7 +2,6 @@ import queryString from "query-string";
 
 const updateUri = () => {
   const time = getCurrentTime();
-  console.log(time);
   if (time) {
     const uri = createUri(time);
     history.pushState({}, "", uri);
