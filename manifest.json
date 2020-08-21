@@ -1,0 +1,15 @@
+{
+  "manifest_version": 2,
+  "name": "Twitch Timestamp Tracker",
+  "version": "1.0",
+  "description": "Continually update the Twitch video timestamp URL for sharing",
+  "icons": {
+    "48": "icons/icon.svg"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.twitch.tv/*"],
+      "js": ["build/index.js"]
+    }
+  ]
+}

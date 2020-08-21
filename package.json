@@ -1,0 +1,17 @@
+{
+  "name": "twitch-timestamp-tracker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack"
+  },
+  "dependencies": {
+    "query-string": "^6.13.1"
+  },
+  "devDependencies": {
+    "ts-loader": "^8.0.2",
+    "typescript": "^4.0.2",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
+  }
+}

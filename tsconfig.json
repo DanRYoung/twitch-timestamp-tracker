@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "lib": ["es5", "dom"],
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "noErrorTruncation": false,
+    "allowJs": true,
+    "baseUrl": "./",
+    "esModuleInterop": true
+  },
+  "exclude": ["**/build/"]
+}
