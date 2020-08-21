@@ -1,18 +1,14 @@
 {
-  "developer": {
-    "author": "Daniel Young",
-    "url": "https://github.com/DanRYoung/twitch-timestamp-tracker"
-  },
   "manifest_version": 2,
   "name": "Twitch Timestamp Tracker",
   "version": "1.0",
-  "description": "Continually update the Twitch video timestamp URL for sharing",
+  "description": "Continually track the Twitch video timestamp in the address bar",
   "icons": {
     "48": "icons/icon.svg"
   },
   "content_scripts": [
     {
-      "matches": ["*://*.twitch.tv/videos/*"],
+      "matches": ["*://*.twitch.tv/"],
       "js": ["build/index.js"]
     }
   ]
