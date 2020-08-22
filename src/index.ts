@@ -45,6 +45,6 @@ const createUri = (time: string): string => {
   const { href } = window.location;
   const parsed = queryString.parseUrl(href);
   const nextTime = formatTime(time);
-  if (parsed.query.t && nextTime) parsed.query.t = time;
+  if (parsed.query.t && nextTime) parsed.query.t = nextTime;
   return queryString.stringifyUrl(parsed, { encode: false });
 };
