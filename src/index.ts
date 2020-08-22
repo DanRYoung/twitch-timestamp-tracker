@@ -27,10 +27,13 @@ const getCurrentTime = (): string | null => {
  * in the twitch.tv uri query string (XXhXXmXXs)
  * @param time Parsed DOM video time
  */
-const formatTime = (time: string): string => {
+const formatTime = (time: string): string | null => {
   const timeUnits = time.split(":");
-  if (timeUnits.length !== 3) return "";
-  return `${timeUnits[0]}h${timeUnits[1]}m${timeUnits[2]}s`;
+  if (timeUnits.length !== 3) return null;
+  /* If twitch.tv gives us 00:00:00, don't set that as the time */
+  if (timeUnits.some((unit) => Number(unit) !== 0))
+    return `${timeUnits[0]}h${timeUnits[1]}m${timeUnits[2]}s`;
+  return null;
 };
 
 /**
@@ -41,6 +44,7 @@ const formatTime = (time: string): string => {
 const createUri = (time: string): string => {
   const { href } = window.location;
   const parsed = queryString.parseUrl(href);
-  if (parsed.query.t) parsed.query.t = formatTime(time);
+  const nextTime = formatTime(time);
+  if (parsed.query.t && nextTime) parsed.query.t = time;
   return queryString.stringifyUrl(parsed, { encode: false });
 };
