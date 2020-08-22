@@ -1,39 +1,34 @@
 import queryString from "query-string";
+import ElapsedTime from "./types/ElapsedTime";
 
-const updateUri = () => {
-  const time = getCurrentTime();
-  if (time) {
-    const uri = createUri(time);
-    history.pushState({}, "", uri);
+const REFRESH_RATE_MS = 1000;
+let previousTime: ElapsedTime | null = null;
+
+/**
+ * Retrieve the elapsed video time and set it as the
+ * current address bar string
+ */
+const updateAddressBar = () => {
+  const time = getElapsedTime();
+  if (!time) return;
+
+  if (!previousTime || !isEqual(previousTime, time)) {
+    history.pushState({}, "", createUri(time));
+    previousTime = time;
   }
 };
 
-const REFRESH_RATE_MS = 1000;
-
-setInterval(updateUri, REFRESH_RATE_MS);
+setInterval(updateAddressBar, REFRESH_RATE_MS);
 
 /**
  * Find the current video time
  */
-const getCurrentTime = (): string | null => {
+const getElapsedTime = (): ElapsedTime | null => {
   const node = document.querySelector(
     `p[data-a-target="player-seekbar-current-time"]`
   );
-  return node ? node.textContent : null;
-};
-
-/**
- * Convert the video time format into the format expected by the
- * in the twitch.tv uri query string (XXhXXmXXs)
- * @param time Parsed DOM video time
- */
-const formatTime = (time: string): string | null => {
-  const timeUnits = time.split(":");
-  if (timeUnits.length !== 3) return null;
-  /* If twitch.tv gives us 00:00:00, don't set that as the time */
-  if (timeUnits.some((unit) => Number(unit) !== 0))
-    return `${timeUnits[0]}h${timeUnits[1]}m${timeUnits[2]}s`;
-  return null;
+  if (!node || !node.textContent) return null;
+  return parseDuration(node.textContent);
 };
 
 /**
@@ -41,10 +36,48 @@ const formatTime = (time: string): string | null => {
  * @param time Raw video time string parsed from the twitch.tv
  * uri (XX:XX:XX)
  */
-const createUri = (time: string): string => {
-  const { href } = window.location;
-  const parsed = queryString.parseUrl(href);
-  const nextTime = formatTime(time);
-  if (parsed.query.t && nextTime) parsed.query.t = nextTime;
-  return queryString.stringifyUrl(parsed, { encode: false });
+const createUri = (duration: ElapsedTime): string => {
+  const parsedUrl = queryString.parseUrl(window.location.href);
+  parsedUrl.query.t = toString(duration);
+  return queryString.stringifyUrl(parsedUrl, { encode: false });
 };
+
+/**
+ * Parse the twitch DOM timestamp into structured data
+ * @param time Twitch timestamp in the form XX:XX:XX
+ */
+const parseDuration = (duration: string): ElapsedTime | null => {
+  const elements = duration.split(":");
+
+  if (elements.length !== 3) return null;
+
+  const parsed = {
+    hours: Number(elements[0]),
+    minutes: Number(elements[1]),
+    seconds: Number(elements[2]),
+  };
+  return isValid(parsed) ? parsed : null;
+};
+
+/**
+ * Format a duration into th one expected by a twitch.tv
+ * query string
+ * @param duration
+ */
+export const toString = (duration: ElapsedTime): string =>
+  `${duration.hours}h${duration.minutes}m${duration.seconds}s`;
+
+/**
+ * Determine if two duration elements are equal
+ * @param a Comparison element
+ * @param b Comparison element
+ */
+
+export const isEqual = (a: ElapsedTime, b: ElapsedTime) =>
+  a.hours === b.hours && a.minutes === b.minutes && a.seconds === b.seconds;
+
+/**
+ * Determine if the duration elements constitute a valid elapsed time
+ * @param t Current time
+ */
+export const isValid = (t: ElapsedTime) => t.hours || t.minutes || t.seconds;
